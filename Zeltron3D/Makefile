@@ -39,9 +39,9 @@ ifeq ($(IO),h5)
 	LPATH=-L /scr_verus/wernerg/contrib2/hdf5-1.8.11-par/lib
 	LIB=-lhdf5_fortran -lhdf5_f90cstub -lhdf5
 	INCLUDE=-I /scr_verus/wernerg/contrib2/hdf5-1.8.11-par/include/fortran
-	## On supercomputers with hdf5 modules loaded 
+	## On supercomputers with hdf5 modules loaded
 	#  (or systems with h5pfc defined), uncomment the following 3 lines,
-	#  and comment the above 3 lines.  
+	#  and comment the above 3 lines.
 	#LPATH=
 	#LIB=
 	#INCLUDE=
@@ -55,9 +55,9 @@ endif
 
 all:main testExtcmd
 
-# Here is the link step 
+# Here is the link step
 main:mod_input.o mod_extcmd.o mod_initial.o mod_mpi.o mod_log.o mod_interp.o $(modio).o mod_fields.o mod_motion.o mod_rhoj.o mod_sync.o mod_track.o mod_analysis.o main.o
-	 $(F90) $(OPT) -o zeltron.exe $(LPATH) mod_input.o mod_extcmd.o mod_initial.o mod_mpi.o mod_log.o mod_interp.o $(modio).o mod_fields.o mod_motion.o mod_rhoj.o mod_sync.o mod_track.o mod_analysis.o main.o $(LIB) 
+	 $(F90) $(OPT) -o zeltron.exe $(LPATH) mod_input.o mod_extcmd.o mod_initial.o mod_mpi.o mod_log.o mod_interp.o $(modio).o mod_fields.o mod_motion.o mod_rhoj.o mod_sync.o mod_track.o mod_analysis.o main.o $(LIB)
 
 testExtcmd:extcmd.o mod_extcmd.o
 	$(F90) $(OPT) mod_extcmd.o extcmd.o -o testExtcmd
@@ -69,43 +69,47 @@ mod_extcmd.o:mod_extcmd.f90
 
 extcmd.o:extcmd.f90
 	$(F90) $(OPT) -c extcmd.f90
- 
-mod_input.o:mod_input.f90  
-	 $(F90) $(OPT) -c mod_input.f90 
 
-mod_initial.o:mod_initial.f90  
-	 $(F90) $(OPT) -c mod_initial.f90 
+mod_input.o:mod_input.f90
+	 $(F90) $(OPT) -c mod_input.f90
 
-mod_mpi.o:mod_mpi.f90  
-	 $(F90) $(OPT) -c mod_mpi.f90 
+mod_initial.o:mod_initial.f90
+	 $(F90) $(OPT) -c mod_initial.f90
 
-mod_log.o:mod_log.f90  
-	 $(F90) $(OPT) -c mod_log.f90 
+mod_mpi.o:mod_mpi.f90
+	 $(F90) $(OPT) -c mod_mpi.f90
 
-mod_interp.o:mod_interp.f90  
-	 $(F90) $(OPT) -c mod_interp.f90 
+mod_log.o:mod_log.f90
+	 $(F90) $(OPT) -c mod_log.f90
 
-$(modio).o:$(modio).f90  
-	 $(F90) $(OPT) $(INCLUDE) -c $(modio).f90 
+mod_interp.o:mod_interp.f90 mod_mpi.o
+	 $(F90) $(OPT) -c mod_interp.f90
 
-mod_fields.o:mod_fields.f90  
-	 $(F90) $(OPT) -c mod_fields.f90 
+$(modio).o:$(modio).f90 mod_mpi.o
+	 $(F90) $(OPT) $(INCLUDE) -c $(modio).f90
 
-mod_motion.o:mod_motion.f90  
+mod_fields.o:mod_fields.f90
+	 $(F90) $(OPT) -c mod_fields.f90
+
+mod_motion.o:mod_motion.f90 mod_mpi.o
 	 $(F90) $(OPT) -c mod_motion.f90
 
-mod_rhoj.o:mod_rhoj.f90  
+mod_rhoj.o:mod_rhoj.f90
 	 $(F90) $(OPT) -c mod_rhoj.f90
- 
-mod_sync.o:mod_sync.f90  
+
+mod_sync.o:mod_sync.f90
 	 $(F90) $(OPT) -c mod_sync.f90
 
-mod_track.o:mod_track.f90  
-	 $(F90) $(OPT) -c mod_track.f90 
+mod_track.o:mod_track.f90 mod_mpi.o $(modio).o
+	 $(F90) $(OPT) -c mod_track.f90
 
-mod_analysis.o:mod_analysis.f90  
+mod_analysis.o:mod_analysis.f90 mod_mpi.o $(modio).o mod_track.o
 	 $(F90) $(OPT) -c mod_analysis.f90
- 
-main.o:main.f90 mod_input.o mod_initial.o mod_mpi.o mod_log.o mod_interp.o $(modio).o mod_fields.o mod_motion.o mod_rhoj.o mod_sync.o mod_track.o mod_analysis.o 
+
+main.o:main.f90 mod_input.o mod_initial.o mod_mpi.o mod_log.o mod_interp.o $(modio).o mod_fields.o mod_motion.o mod_rhoj.o mod_sync.o mod_track.o mod_analysis.o
 	 $(F90) $(OPT) -c main.f90
 
+clean:
+	-rm -f *.o
+	-rm -f *.mod
+	-rm -f testExtcmd
