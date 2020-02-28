@@ -464,11 +464,11 @@ DEALLOCATE(tmpRa1, tmpRa2, tmpRa3)
 
 IF (writePerRankFiles) THEN
   OPEN(9, FILE=trim(perRankFile), POSITION='APPEND')
-  WRITE(9, *), "Domain index:", coords
-  WRITE(9, *), "Global domain: lower bounds =", xmin, ymin, zmin
-  WRITE(9, *), "Global domain: upper bounds =", xmax, ymax, zmax
-  WRITE(9, *), "Local domain:  lower bounds =", xminp, yminp, zminp
-  WRITE(9, *), "Local domain:  upper bounds =", xmaxp, ymaxp, zmaxp
+  WRITE(9, *) "Domain index:", coords
+  WRITE(9, *) "Global domain: lower bounds =", xmin, ymin, zmin
+  WRITE(9, *) "Global domain: upper bounds =", xmax, ymax, zmax
+  WRITE(9, *) "Local domain:  lower bounds =", xminp, yminp, zminp
+  WRITE(9, *) "Local domain:  upper bounds =", xmaxp, ymaxp, zmaxp
   WRITE(9, *) "SIZE(xg) = ", SIZE(xg)
   WRITE(9, *) "xg: ", xg
   WRITE(9, *) "SIZE(yg) = ", SIZE(yg)
